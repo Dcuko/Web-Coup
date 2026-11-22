@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Coup online: jogo de cartas de blefe e traição para 2 a 6 amigos, direto no navegador.">
+  <meta property="og:title" content="Coup Online">
+  <meta property="og:description" content="Jogo de blefe e traição para 2 a 6 amigos. Crie uma sala e mande o código.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎭%3C/text%3E%3C/svg%3E">
+  <title>Coup Online</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css?v=14">
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-slate-900 to-black text-gray-100 min-h-screen">
+
+  <!-- ============================================================ -->
+  <!-- TELA: HOME                                                    -->
+  <!-- ============================================================ -->
+  <section id="screen-home" class="screen flex flex-col items-center justify-center min-h-screen p-6">
+    <div class="text-center max-w-md w-full">
+      <h1 class="text-6xl sm:text-7xl font-black tracking-tight mb-2 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
+        COUP
+      </h1>
+      <p class="text-gray-400 text-sm sm:text-base mb-12">
+        Jogo de cartas de blefe e traição<br>
+        <span class="text-xs text-gray-500">Versão online entre amigos</span>
+      </p>
+
+      <div class="flex flex-col gap-4">
+        <button data-action="goto-create" class="btn-primary">
+          Criar Sala
+        </button>
+        <button data-action="goto-join" class="btn-secondary">
+          Entrar em Sala
+        </button>
+        <button data-action="show-rules" class="btn-ghost">
+          📖 Como jogar
+        </button>
+      </div>
+
+      <p class="text-xs text-gray-600 mt-12">
+        2 a 6 jogadores · peer-to-peer · sem servidor
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TELA: CRIAR SALA                                              -->
+  <!-- ============================================================ -->
+  <section id="screen-create" class="screen hidden flex-col items-center justify-center min-h-screen p-6">
+    <div class="max-w-md w-full">
+      <button data-action="goto-home" class="text-gray-400 hover:text-white mb-6 text-sm">
+        ← Voltar
+      </button>
+
+      <h2 class="text-3xl font-bold mb-6">Criar Sala</h2>
+
+      <div class="flex flex-col gap-4">
+        <label class="flex flex-col gap-1">
+          <span class="text-sm text-gray-400">Seu nome</span>
+          <input id="create-name" type="text" maxlength="16" placeholder="Ex: Augusto"
+                 class="input-field">
+        </label>
+
+        <button data-action="create-room" class="btn-primary mt-2">
+          Criar sala
+        </button>
+      </div>
+
+      <!-- Bloco que aparece depois de criar a sala -->
+      <div id="create-result" class="hidden mt-8 p-6 bg-gray-800/50 rounded-xl border border-gray-700">
+        <p class="text-sm text-gray-400 mb-1">Código da sala:</p>
+        <p id="create-room-code" class="text-3xl font-mono font-bold text-amber-400 tracking-wider">—</p>
+        <p class="text-xs text-gray-500 mt-3">Compartilhe este código com seus amigos para eles entrarem.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TELA: ENTRAR EM SALA                                          -->
+  <!-- ============================================================ -->
+  <section id="screen-join" class="screen hidden flex-col items-center justify-center min-h-screen p-6">
+    <div class="max-w-md w-full">
+      <button data-action="goto-home" class="text-gray-400 hover:text-white mb-6 text-sm">
+        ← Voltar
+      </button>
+
+      <h2 class="text-3xl font-bold mb-6">Entrar em Sala</h2>
+
+      <div class="flex flex-col gap-4">
+        <label class="flex flex-col gap-1">
+          <span class="text-sm text-gray-400">Seu nome</span>
+          <input id="join-name" type="text" maxlength="16" placeholder="Ex: Bruno"
+                 class="input-field">
+        </label>
+
+        <label class="flex flex-col gap-1">
+          <span class="text-sm text-gray-400">Código da sala</span>
+          <input id="join-code" type="text" maxlength="4" placeholder="Ex: AB12"
+                 class="input-field uppercase tracking-widest font-mono text-center text-2xl">
+        </label>
+
+        <button data-action="join-room" class="btn-primary mt-2">
+          Entrar
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TELA: LOBBY                                                   -->
+  <!-- ============================================================ -->
+  <section id="screen-lobby" class="screen hidden flex-col items-center min-h-screen p-6">
+    <div class="max-w-md w-full mt-8">
+      <div class="text-center mb-8">
+        <p class="text-sm text-gray-400">Código da sala</p>
+        <p id="lobby-room-code" class="text-4xl font-mono font-bold text-amber-400 tracking-wider">—</p>
+      </div>
+
+      <div class="bg-gray-800/50 rounded-xl border border-gray-700 p-5">
+        <h3 class="font-semibold mb-3 text-gray-300">Jogadores conectados</h3>
+        <ul id="lobby-players" class="flex flex-col gap-2">
+          <!-- Preenchido dinamicamente -->
+        </ul>
+      </div>
+
+      <div id="lobby-host-controls" class="hidden mt-6">
+        <div class="mb-3 p-3 bg-gray-800/40 border border-gray-700 rounded-lg">
+          <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+            <input id="lobby-timer-toggle" type="checkbox" class="accent-amber-500">
+            Timer por jogada
+          </label>
+          <div id="lobby-timer-config" class="hidden mt-2 flex items-center gap-2 text-xs text-gray-400">
+            <label>Segundos por turno:
+              <input id="lobby-timer-seconds" type="number" min="10" max="120" value="30"
+                     class="bg-gray-900 border border-gray-700 rounded px-2 py-1 w-16 text-center ml-1">
+            </label>
+          </div>
+        </div>
+        <button data-action="start-game" class="btn-primary w-full">
+          Iniciar partida
+        </button>
+        <p class="text-xs text-gray-500 text-center mt-2">Mínimo 2 jogadores · Máximo 6</p>
+      </div>
+
+      <div id="lobby-guest-waiting" class="hidden mt-6 text-center text-gray-400 text-sm">
+        Aguardando o host iniciar a partida...
+      </div>
+
+      <div class="flex flex-col items-center gap-2 mt-8">
+        <button data-action="show-rules" class="text-gray-400 hover:text-white text-sm">
+          📖 Como jogar
+        </button>
+        <button data-action="leave-room" class="text-gray-500 hover:text-white text-sm">
+          Sair da sala
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TELA: JOGO                                                    -->
+  <!-- ============================================================ -->
+  <section id="screen-game" class="screen hidden flex-col min-h-screen">
+
+    <!-- Barra superior -->
+    <header class="bg-gray-900/80 backdrop-blur border-b border-gray-800 p-3 flex items-center justify-between gap-2">
+      <div class="text-xs text-gray-400">
+        Sala: <span id="game-room-code" class="font-mono text-amber-400">—</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-xs text-gray-400">
+          Turno: <span id="game-current-turn" class="font-semibold text-white">—</span>
+        </div>
+        <button data-action="show-rules" class="sound-toggle" title="Como jogar">📖</button>
+        <button id="sound-toggle" class="sound-toggle" title="Ligar/desligar som">🔊</button>
+        <button id="game-leave-btn" data-action="leave-game" class="sound-toggle" title="Sair da sala">🚪 Sair</button>
+      </div>
+    </header>
+
+    <!-- Barra de timer (opcional) -->
+    <div id="turn-timer" class="hidden"><div id="turn-timer-fill"></div></div>
+
+    <!-- Banner de fase atual (pendente, aguardando resposta, etc.) -->
+    <div id="game-phase-banner" class="hidden px-4 py-3 text-sm text-center border-b border-amber-600/40 bg-amber-600/10 text-amber-200"></div>
+
+    <!-- Barra de auto-pass (10s) -->
+    <div id="auto-pass-bar" class="hidden flex items-center gap-2 px-4 py-2 border-b border-gray-800 bg-gray-900/60 text-xs">
+      <span class="text-gray-400">⏳ Auto-pass em</span>
+      <span id="auto-pass-label" class="font-mono font-bold text-amber-300">10s</span>
+      <div class="flex-1 h-1 bg-gray-700 rounded overflow-hidden">
+        <div id="auto-pass-fill" class="h-full bg-gradient-to-r from-amber-400 to-red-500 transition-all" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- Área principal: outros jogadores -->
+    <div class="flex-1 flex flex-col gap-4 p-4">
+      <div>
+        <h3 class="text-xs uppercase tracking-wider text-gray-500 mb-2">Outros jogadores</h3>
+        <ul id="game-opponents" class="flex flex-wrap gap-3">
+          <!-- Jogadores oponentes preenchidos dinamicamente -->
+        </ul>
+      </div>
+
+      <!-- Log de eventos -->
+      <div class="flex-1">
+        <h3 class="text-xs uppercase tracking-wider text-gray-500 mb-2">Eventos da partida</h3>
+        <div id="game-log" class="bg-gray-900/60 border border-gray-800 rounded-lg p-3 h-40 sm:h-56 overflow-y-auto text-sm font-mono text-gray-300 space-y-1">
+          <p class="text-gray-600 italic">A partida vai começar...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área inferior: jogador (eu) -->
+    <footer class="bg-gray-900/90 backdrop-blur border-t border-gray-800 p-4 sticky bottom-0">
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <p class="text-xs text-gray-500">Você</p>
+          <p id="game-my-name" class="font-semibold">—</p>
+        </div>
+        <div class="text-right">
+          <p class="text-xs text-gray-500">Moedas</p>
+          <p id="game-my-coins" class="font-bold text-amber-400 text-xl">2</p>
+        </div>
+      </div>
+
+      <!-- Minhas cartas -->
+      <div class="flex gap-3 justify-center mb-4">
+        <div id="game-my-card-1" class="card-placeholder">?</div>
+        <div id="game-my-card-2" class="card-placeholder">?</div>
+      </div>
+
+      <!-- Botões de ação (visível no meu turno, fase 'action') -->
+      <div id="game-actions" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <button class="btn-action" data-game-action="income">Renda<br><span class="text-xs opacity-70">+1</span></button>
+        <button class="btn-action" data-game-action="foreign-aid">Ajuda Ext.<br><span class="text-xs opacity-70">+2</span></button>
+        <button class="btn-action" data-game-action="coup">Golpe<br><span class="text-xs opacity-70">-7</span></button>
+        <button class="btn-action" data-game-action="tax">Imposto<br><span class="text-xs opacity-70">Duque</span></button>
+        <button class="btn-action" data-game-action="assassinate">Assassinar<br><span class="text-xs opacity-70">-3</span></button>
+        <button class="btn-action" data-game-action="steal">Roubar<br><span class="text-xs opacity-70">Capitão</span></button>
+        <button class="btn-action" data-game-action="exchange">Trocar<br><span class="text-xs opacity-70">Embaixador</span></button>
+      </div>
+
+      <!-- Botões de RESPOSTA (visível quando pendente de contestação/bloqueio) -->
+      <div id="game-response" class="hidden flex-wrap gap-2 mt-1">
+        <!-- Preenchido dinamicamente: Contestar / Bloquear com X / Passar -->
+      </div>
+    </footer>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Selecionar alvo                                        -->
+  <!-- ============================================================ -->
+  <div id="modal-target" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <h3 class="text-lg font-bold mb-3" id="modal-target-title">Escolha o alvo</h3>
+      <ul id="modal-target-list" class="flex flex-col gap-2"></ul>
+      <button data-action="cancel-target" class="text-gray-400 text-sm mt-4 hover:text-white">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Escolher carta pra perder                              -->
+  <!-- ============================================================ -->
+  <div id="modal-lose" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <h3 class="text-lg font-bold mb-2">Você vai perder uma influência</h3>
+      <p class="text-sm text-gray-400 mb-4" id="modal-lose-reason"></p>
+      <div id="modal-lose-cards" class="flex gap-3 justify-center"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Troca do Embaixador                                    -->
+  <!-- ============================================================ -->
+  <div id="modal-exchange" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <h3 class="text-lg font-bold mb-1">Troca do Embaixador</h3>
+      <p class="text-sm text-gray-400 mb-4" id="modal-exchange-hint">Escolha as cartas que vai ficar.</p>
+      <div id="modal-exchange-cards" class="flex gap-2 justify-center flex-wrap mb-4"></div>
+      <button id="modal-exchange-confirm" class="btn-primary w-full" disabled>Confirmar</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Fim de jogo                                            -->
+  <!-- ============================================================ -->
+  <div id="modal-end" class="modal-backdrop hidden">
+    <div class="modal-content text-center">
+      <h2 class="text-2xl font-bold mb-2">🏆 Fim de partida!</h2>
+      <p class="text-lg mb-4"><span id="modal-end-winner">—</span> venceu!</p>
+      <button data-action="return-to-lobby" class="btn-primary w-full">Voltar ao lobby</button>
+      <button data-action="leave-game" class="btn-secondary w-full mt-2">Sair da sala</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Como jogar (regras + cartas)                           -->
+  <!-- ============================================================ -->
+  <div id="modal-rules" class="modal-backdrop hidden">
+    <div class="modal-content modal-rules-content">
+      <div class="modal-rules-header">
+        <h2 class="text-2xl font-bold">Como jogar — Coup</h2>
+        <button data-action="close-rules" class="modal-close-btn" title="Fechar">×</button>
+      </div>
+      <div class="modal-rules-body">
+        <section class="rules-section">
+          <h3>Objetivo</h3>
+          <p>Ser o último jogador com cartas na mesa. Cada jogador começa com <strong>2 cartas</strong> secretas e <strong>2 moedas</strong>. Se você perder as duas cartas, está eliminado.</p>
+        </section>
+
+        <section class="rules-section">
+          <h3>Turno</h3>
+          <p>No seu turno, você escolhe <strong>uma ação</strong>. Pode ser uma ação geral (não precisa de carta) ou uma ação de personagem (você <em>afirma</em> ter a carta — pode estar blefando). Os outros podem <strong>contestar</strong> ou <strong>bloquear</strong>.</p>
+        </section>
+
+        <section class="rules-section">
+          <h3>Ações gerais</h3>
+          <ul class="rules-list">
+            <li><strong>Renda</strong> — pega 1 moeda. Não pode ser bloqueada nem contestada.</li>
+            <li><strong>Ajuda externa</strong> — pega 2 moedas. Qualquer um com <strong>Duque</strong> pode bloquear.</li>
+            <li><strong>Golpe (Coup)</strong> — paga 7 moedas e escolhe um alvo pra perder uma carta. <strong>Imparável</strong>. Com 10+ moedas, você é <em>obrigado</em> a dar Coup.</li>
+          </ul>
+        </section>
+
+        <section class="rules-section">
+          <h3>Contestação e blefe</h3>
+          <p>Quando alguém afirma ter uma carta, qualquer outro pode <strong>contestar</strong>. Se o jogador tiver a carta, mostra, embaralha de volta e pega uma nova — o contestador perde uma carta. Se estava blefando, ele perde uma carta.</p>
+        </section>
+
+        <section class="rules-section">
+          <h3>Personagens</h3>
+          <div class="rules-cards">
+            <div class="rules-card-row">
+              <img src="assets/cards/duque.webp" alt="Duque" class="rules-card-img">
+              <div class="rules-card-info">
+                <h4 class="rules-card-name card-duke-name">Duque</h4>
+                <p><strong>Taxa:</strong> pega 3 moedas.<br><strong>Bloqueia:</strong> Ajuda externa.</p>
+              </div>
+            </div>
+            <div class="rules-card-row">
+              <img src="assets/cards/assassino.webp" alt="Assassino" class="rules-card-img">
+              <div class="rules-card-info">
+                <h4 class="rules-card-name card-assassin-name">Assassino</h4>
+                <p><strong>Assassinar:</strong> paga 3 moedas e força um alvo a perder uma carta. Pode ser bloqueado pela Condessa.</p>
+              </div>
+            </div>
+            <div class="rules-card-row">
+              <img src="assets/cards/capitao.webp" alt="Capitão" class="rules-card-img">
+              <div class="rules-card-info">
+                <h4 class="rules-card-name card-captain-name">Capitão</h4>
+                <p><strong>Extorquir:</strong> rouba 2 moedas de um alvo.<br><strong>Bloqueia:</strong> Extorsão (outro Capitão ou Embaixador).</p>
+              </div>
+            </div>
+            <div class="rules-card-row">
+              <img src="assets/cards/embaixador.webp" alt="Embaixador" class="rules-card-img">
+              <div class="rules-card-info">
+                <h4 class="rules-card-name card-ambassador-name">Embaixador</h4>
+                <p><strong>Trocar:</strong> pega 2 cartas do baralho, escolhe quais manter e devolve o resto.<br><strong>Bloqueia:</strong> Extorsão.</p>
+              </div>
+            </div>
+            <div class="rules-card-row">
+              <img src="assets/cards/condessa.webp" alt="Condessa" class="rules-card-img">
+              <div class="rules-card-info">
+                <h4 class="rules-card-name card-contessa-name">Condessa</h4>
+                <p>Sem ação própria.<br><strong>Bloqueia:</strong> Assassinato.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="rules-section">
+          <h3>Dica</h3>
+          <p>Você pode afirmar ter <em>qualquer</em> carta, mesmo que não tenha. O jogo é sobre ler as pessoas e saber quando blefar. Boa sorte!</p>
+        </section>
+      </div>
+      <div class="modal-rules-footer">
+        <button data-action="close-rules" class="btn-primary w-full">Entendi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODAL: Notificações/Toasts                                    -->
+  <!-- ============================================================ -->
+  <div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm shadow-lg z-50"></div>
+
+  <!-- Scripts -->
+  <script src="assets/js/sounds.js?v=14"></script>
+  <script src="assets/js/deck.js?v=14"></script>
+  <script src="assets/js/game.js?v=14"></script>
+  <script src="assets/js/ui.js?v=14"></script>
+  <script src="assets/js/peer.js?v=14"></script>
+  <script src="assets/js/main.js?v=14"></script>
+</body>
+</html>

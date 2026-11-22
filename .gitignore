@@ -1,0 +1,15 @@
+# SO / editor
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Originais pesados das cartas (se voltarem pra cá)
+*.psd
+*.xcf
+_originais*/
+
+# Logs/temporarios
+*.log
+*.tmp
