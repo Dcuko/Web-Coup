@@ -716,3 +716,25 @@ body {
 .opponent-card.disconnected .card-placeholder {
   filter: grayscale(0.6);
 }
+
+
+/* ---------- Seletor de tema de cartas ---------- */
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.75rem;
+  background: rgba(31, 41, 55, 0.7);
+  border: 2px solid rgba(75, 85, 99, 0.5);
+  color: #e5e7eb;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.theme-option:hover { border-color: rgba(245, 158, 11, 0.6); }
+.theme-option.selected { border-color: #f59e0b; background: rgba(245, 158, 11, 0.12); }
+.theme-thumbs { display: flex; gap: 0.35rem; flex-shrink: 0; }
+.theme-thumbs img { width: 44px; height: 64px; object-fit: cover; border-radius: 4px; }
+.theme-name { font-weight: 700; }

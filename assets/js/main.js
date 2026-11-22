@@ -262,6 +262,9 @@ document.addEventListener('click', e => {
     case 'cancel-target': UI.hideTargetPicker(); break;
     case 'kick-player':  handleKickPlayer(btn); break;
     case 'show-rules':   document.getElementById('modal-rules')?.classList.remove('hidden'); break;
+    case 'show-themes':  renderThemePicker(); document.getElementById('modal-themes')?.classList.remove('hidden'); break;
+    case 'close-themes': document.getElementById('modal-themes')?.classList.add('hidden'); break;
+    case 'pick-theme':   pickTheme(btn.dataset.theme); break;
     case 'close-rules':  document.getElementById('modal-rules')?.classList.add('hidden'); break;
   }
 });
@@ -270,8 +273,43 @@ document.addEventListener('click', e => {
 document.getElementById('modal-rules')?.addEventListener('click', e => {
   if (e.target.id === 'modal-rules') e.target.classList.add('hidden');
 });
+document.getElementById('modal-themes')?.addEventListener('click', e => {
+  if (e.target.id === 'modal-themes') e.target.classList.add('hidden');
+});
+
+/** Monta a lista de temas com prévia (3 cartas) e marca o atual. */
+function renderThemePicker() {
+  const list = document.getElementById('theme-list');
+  if (!list) return;
+  const current = CardTheme.get();
+  list.innerHTML = '';
+  Object.entries(CARD_THEMES).forEach(([id, t]) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.action = 'pick-theme';
+    b.dataset.theme = id;
+    b.className = 'theme-option' + (id === current ? ' selected' : '');
+    const thumbs = ['duke', 'contessa', 'assassin'].map(c =>
+      `<img src="assets/cards/${id}/${CHARACTERS[c.toUpperCase()].file}.webp" alt="" loading="lazy">`).join('');
+    b.innerHTML = `<span class="theme-thumbs">${thumbs}</span>
+      <span class="theme-name">${escapeHTML(t.name)}${id === current ? ' ✓' : ''}</span>`;
+    list.appendChild(b);
+  });
+}
+
+function pickTheme(id) {
+  if (!id || !CARD_THEMES[id]) return;
+  CardTheme.set(id);
+  renderThemePicker();
+  // Re-renderiza a mesa com o tema novo (se estiver numa partida)
+  if (CoupApp.lastState && CoupApp.myPlayerId) {
+    UI.renderGame(CoupApp.lastState, CoupApp.myPlayerId, CoupApp.roomCode);
+  }
+}
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    document.getElementById('modal-themes')?.classList.add('hidden');
     const rules = document.getElementById('modal-rules');
     if (rules && !rules.classList.contains('hidden')) rules.classList.add('hidden');
   }

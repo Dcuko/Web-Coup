@@ -12,7 +12,7 @@
   <title>Coup Online</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=15">
+  <link rel="stylesheet" href="assets/css/style.css?v=16">
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-slate-900 to-black text-gray-100 min-h-screen">
 
@@ -38,6 +38,9 @@
         </button>
         <button data-action="show-rules" class="btn-ghost">
           📖 Como jogar
+        </button>
+        <button data-action="show-themes" class="btn-ghost">
+          🎨 Tema das cartas
         </button>
       </div>
 
@@ -154,6 +157,9 @@
         <button data-action="show-rules" class="text-gray-400 hover:text-white text-sm">
           📖 Como jogar
         </button>
+        <button data-action="show-themes" class="text-gray-400 hover:text-white text-sm">
+          🎨 Tema das cartas
+        </button>
         <button data-action="leave-room" class="text-gray-500 hover:text-white text-sm">
           Sair da sala
         </button>
@@ -176,6 +182,7 @@
           Turno: <span id="game-current-turn" class="font-semibold text-white">—</span>
         </div>
         <button data-action="show-rules" class="sound-toggle" title="Como jogar">📖</button>
+        <button data-action="show-themes" class="sound-toggle" title="Tema das cartas">🎨</button>
         <button id="sound-toggle" class="sound-toggle" title="Ligar/desligar som">🔊</button>
         <button id="game-leave-btn" data-action="leave-game" class="sound-toggle" title="Sair da sala">🚪 Sair</button>
       </div>
@@ -300,6 +307,17 @@
   <!-- ============================================================ -->
   <!-- MODAL: Como jogar (regras + cartas)                           -->
   <!-- ============================================================ -->
+  <div id="modal-themes" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-lg font-bold">Tema das cartas</h3>
+        <button data-action="close-themes" class="modal-close-btn" title="Fechar">×</button>
+      </div>
+      <p class="text-xs text-gray-400 mb-4">Só muda o que você vê — cada jogador escolhe o seu.</p>
+      <div id="theme-list" class="flex flex-col gap-3"></div>
+    </div>
+  </div>
+
   <div id="modal-rules" class="modal-backdrop hidden">
     <div class="modal-content modal-rules-content">
       <div class="modal-rules-header">
@@ -389,11 +407,11 @@
   <div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm shadow-lg z-50"></div>
 
   <!-- Scripts -->
-  <script src="assets/js/sounds.js?v=15"></script>
-  <script src="assets/js/deck.js?v=15"></script>
-  <script src="assets/js/game.js?v=15"></script>
-  <script src="assets/js/ui.js?v=15"></script>
-  <script src="assets/js/peer.js?v=15"></script>
-  <script src="assets/js/main.js?v=15"></script>
+  <script src="assets/js/sounds.js?v=16"></script>
+  <script src="assets/js/deck.js?v=16"></script>
+  <script src="assets/js/game.js?v=16"></script>
+  <script src="assets/js/ui.js?v=16"></script>
+  <script src="assets/js/peer.js?v=16"></script>
+  <script src="assets/js/main.js?v=16"></script>
 </body>
 </html>

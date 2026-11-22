@@ -19,7 +19,7 @@ Não precisa de build, Node, ngrok nem servidor próprio. As conexões de jogo s
 
 Cada tema é uma pasta em `assets/cards/<tema>/` com 5 arquivos `.webp` de mesmo nome. Pra adicionar um:
 crie a pasta, coloque as 5 imagens (~400×590 px) e registre em `CARD_THEMES` no `assets/js/deck.js`.
-A escolha fica no `localStorage` (`CardTheme.set('animais')`); o seletor na interface ainda não existe.
+O jogador escolhe pelo botão 🎨 (home, lobby ou topo da partida); a escolha fica no `localStorage` e só afeta quem escolheu.
 
 ## 🧪 Testar local
 
