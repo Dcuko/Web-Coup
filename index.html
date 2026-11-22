@@ -3,81 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#0b2a24">
   <meta name="description" content="Coup online: jogo de cartas de blefe e traição para 2 a 6 amigos, direto no navegador.">
   <meta property="og:title" content="Coup Online">
   <meta property="og:description" content="Jogo de blefe e traição para 2 a 6 amigos. Crie uma sala e mande o código.">
   <meta property="og:type" content="website">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎭%3C/text%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E♛%3C/text%3E%3C/svg%3E">
   <title>Coup Online</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-  <link rel="stylesheet" href="assets/css/style.css?v=17">
+  <link rel="stylesheet" href="assets/css/style.css?v=21">
 </head>
-<body class="bg-gradient-to-br from-gray-900 via-slate-900 to-black text-gray-100 min-h-screen">
+<body>
+  <div class="table-bg" aria-hidden="true"></div>
 
   <!-- ============================================================ -->
   <!-- TELA: HOME                                                    -->
   <!-- ============================================================ -->
-  <section id="screen-home" class="screen flex flex-col items-center justify-center min-h-screen p-6">
-    <div class="text-center max-w-md w-full">
-      <h1 class="text-6xl sm:text-7xl font-black tracking-tight mb-2 bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent">
-        COUP
-      </h1>
-      <p class="text-gray-400 text-sm sm:text-base mb-12">
-        Jogo de cartas de blefe e traição<br>
-        <span class="text-xs text-gray-500">Versão online entre amigos</span>
-      </p>
-
-      <div class="flex flex-col gap-4">
-        <button data-action="goto-create" class="btn-primary">
-          Criar Sala
-        </button>
-        <button data-action="goto-join" class="btn-secondary">
-          Entrar em Sala
-        </button>
-        <button data-action="show-rules" class="btn-ghost">
-          📖 Como jogar
-        </button>
-        <button data-action="show-themes" class="btn-ghost">
-          🎨 Tema das cartas
-        </button>
+  <section id="screen-home" class="screen hidden home">
+    <div class="home-inner">
+      <div class="hero-fan" aria-hidden="true">
+        <img data-card="contessa"   src="assets/cards/padrao/condessa.webp"   alt="">
+        <img data-card="captain"    src="assets/cards/padrao/capitao.webp"    alt="">
+        <img data-card="duke"       src="assets/cards/padrao/duque.webp"      alt="">
+        <img data-card="ambassador" src="assets/cards/padrao/embaixador.webp" alt="">
+        <img data-card="assassin"   src="assets/cards/padrao/assassino.webp"  alt="">
       </div>
 
-      <p class="text-xs text-gray-600 mt-12">
-        2 a 6 jogadores · peer-to-peer · sem servidor
-      </p>
+      <h1 class="logo">COUP</h1>
+      <p class="tagline"><span>Blefe</span><i>◆</i><span>Traição</span><i>◆</i><span>Poder</span></p>
+
+      <div class="home-actions">
+        <button data-action="goto-create" class="btn-primary">Criar sala</button>
+        <button data-action="goto-join" class="btn-secondary">Entrar em sala</button>
+        <div class="home-links">
+          <button data-action="show-rules" class="btn-link">Como jogar</button>
+          <span aria-hidden="true">·</span>
+          <button data-action="show-themes" class="btn-link">Tema das cartas</button>
+        </div>
+      </div>
+
+      <p class="home-foot">2 a 6 jogadores · direto no navegador · sem cadastro</p>
     </div>
   </section>
 
   <!-- ============================================================ -->
   <!-- TELA: CRIAR SALA                                              -->
   <!-- ============================================================ -->
-  <section id="screen-create" class="screen hidden flex-col items-center justify-center min-h-screen p-6">
-    <div class="max-w-md w-full">
-      <button data-action="goto-home" class="text-gray-400 hover:text-white mb-6 text-sm">
-        ← Voltar
-      </button>
+  <section id="screen-create" class="screen hidden form-screen">
+    <div class="panel form-panel">
+      <button data-action="goto-home" class="back-link">← Voltar</button>
+      <h2 class="panel-title">Criar sala</h2>
+      <p class="panel-sub">Você será o anfitrião da mesa.</p>
 
-      <h2 class="text-3xl font-bold mb-6">Criar Sala</h2>
+      <label class="field">
+        <span>Seu nome</span>
+        <input id="create-name" type="text" maxlength="16" placeholder="Ex: Augusto" class="input-field" autocomplete="off">
+      </label>
 
-      <div class="flex flex-col gap-4">
-        <label class="flex flex-col gap-1">
-          <span class="text-sm text-gray-400">Seu nome</span>
-          <input id="create-name" type="text" maxlength="16" placeholder="Ex: Augusto"
-                 class="input-field">
-        </label>
+      <button data-action="create-room" class="btn-primary">Abrir a mesa</button>
 
-        <button data-action="create-room" class="btn-primary mt-2">
-          Criar sala
-        </button>
-      </div>
-
-      <!-- Bloco que aparece depois de criar a sala -->
-      <div id="create-result" class="hidden mt-8 p-6 bg-gray-800/50 rounded-xl border border-gray-700">
-        <p class="text-sm text-gray-400 mb-1">Código da sala:</p>
-        <p id="create-room-code" class="text-3xl font-mono font-bold text-amber-400 tracking-wider">—</p>
-        <p class="text-xs text-gray-500 mt-3">Compartilhe este código com seus amigos para eles entrarem.</p>
+      <div id="create-result" class="hidden code-ticket">
+        <p class="ticket-label">Código da sala</p>
+        <p id="create-room-code" class="ticket-code">—</p>
+        <p class="ticket-hint">Mande este código para os amigos.</p>
       </div>
     </div>
   </section>
@@ -85,84 +77,68 @@
   <!-- ============================================================ -->
   <!-- TELA: ENTRAR EM SALA                                          -->
   <!-- ============================================================ -->
-  <section id="screen-join" class="screen hidden flex-col items-center justify-center min-h-screen p-6">
-    <div class="max-w-md w-full">
-      <button data-action="goto-home" class="text-gray-400 hover:text-white mb-6 text-sm">
-        ← Voltar
-      </button>
+  <section id="screen-join" class="screen hidden form-screen">
+    <div class="panel form-panel">
+      <button data-action="goto-home" class="back-link">← Voltar</button>
+      <h2 class="panel-title">Entrar em sala</h2>
+      <p class="panel-sub">Peça o código ao anfitrião.</p>
 
-      <h2 class="text-3xl font-bold mb-6">Entrar em Sala</h2>
+      <label class="field">
+        <span>Seu nome</span>
+        <input id="join-name" type="text" maxlength="16" placeholder="Ex: Bruno" class="input-field" autocomplete="off">
+      </label>
 
-      <div class="flex flex-col gap-4">
-        <label class="flex flex-col gap-1">
-          <span class="text-sm text-gray-400">Seu nome</span>
-          <input id="join-name" type="text" maxlength="16" placeholder="Ex: Bruno"
-                 class="input-field">
-        </label>
+      <label class="field">
+        <span>Código da sala</span>
+        <input id="join-code" type="text" maxlength="4" placeholder="AB12" class="input-field code-input" autocomplete="off" autocapitalize="characters">
+      </label>
 
-        <label class="flex flex-col gap-1">
-          <span class="text-sm text-gray-400">Código da sala</span>
-          <input id="join-code" type="text" maxlength="4" placeholder="Ex: AB12"
-                 class="input-field uppercase tracking-widest font-mono text-center text-2xl">
-        </label>
-
-        <button data-action="join-room" class="btn-primary mt-2">
-          Entrar
-        </button>
-      </div>
+      <button data-action="join-room" class="btn-primary">Sentar à mesa</button>
     </div>
   </section>
 
   <!-- ============================================================ -->
   <!-- TELA: LOBBY                                                   -->
   <!-- ============================================================ -->
-  <section id="screen-lobby" class="screen hidden flex-col items-center min-h-screen p-6">
-    <div class="max-w-md w-full mt-8">
-      <div class="text-center mb-8">
-        <p class="text-sm text-gray-400">Código da sala</p>
-        <p id="lobby-room-code" class="text-4xl font-mono font-bold text-amber-400 tracking-wider">—</p>
+  <section id="screen-lobby" class="screen hidden form-screen">
+    <div class="panel form-panel lobby-panel">
+      <div class="code-ticket plain">
+        <p class="ticket-label">Código da sala</p>
+        <p id="lobby-room-code" class="ticket-code">—</p>
       </div>
 
-      <div class="bg-gray-800/50 rounded-xl border border-gray-700 p-5">
-        <h3 class="font-semibold mb-3 text-gray-300">Jogadores conectados</h3>
-        <ul id="lobby-players" class="flex flex-col gap-2">
-          <!-- Preenchido dinamicamente -->
-        </ul>
-      </div>
+      <h3 class="section-label">Na mesa</h3>
+      <ul id="lobby-players" class="lobby-list">
+        <!-- Preenchido dinamicamente -->
+      </ul>
 
-      <div id="lobby-host-controls" class="hidden mt-6">
-        <div class="mb-3 p-3 bg-gray-800/40 border border-gray-700 rounded-lg">
-          <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-            <input id="lobby-timer-toggle" type="checkbox" class="accent-amber-500">
-            Timer por jogada
+      <div id="lobby-host-controls" class="hidden lobby-controls">
+        <div class="timer-config">
+          <label class="check-row">
+            <input id="lobby-timer-toggle" type="checkbox">
+            <span>Limite de tempo por jogada</span>
           </label>
-          <div id="lobby-timer-config" class="hidden mt-2 flex items-center gap-2 text-xs text-gray-400">
-            <label>Segundos por turno:
-              <input id="lobby-timer-seconds" type="number" min="10" max="120" value="30"
-                     class="bg-gray-900 border border-gray-700 rounded px-2 py-1 w-16 text-center ml-1">
+          <div id="lobby-timer-config" class="hidden timer-seconds">
+            <label>Segundos por turno
+              <input id="lobby-timer-seconds" type="number" min="10" max="120" value="30">
             </label>
           </div>
         </div>
-        <button data-action="start-game" class="btn-primary w-full">
-          Iniciar partida
-        </button>
-        <p class="text-xs text-gray-500 text-center mt-2">Mínimo 2 jogadores · Máximo 6</p>
+        <button data-action="start-game" class="btn-primary">Iniciar partida</button>
+        <p class="panel-sub center">Mínimo 2 jogadores · máximo 6</p>
       </div>
 
-      <div id="lobby-guest-waiting" class="hidden mt-6 text-center text-gray-400 text-sm">
-        Aguardando o host iniciar a partida...
+      <div id="lobby-guest-waiting" class="hidden waiting">
+        <span class="dots"><i></i><i></i><i></i></span>
+        Aguardando o anfitrião iniciar a partida
       </div>
 
-      <div class="flex flex-col items-center gap-2 mt-8">
-        <button data-action="show-rules" class="text-gray-400 hover:text-white text-sm">
-          📖 Como jogar
-        </button>
-        <button data-action="show-themes" class="text-gray-400 hover:text-white text-sm">
-          🎨 Tema das cartas
-        </button>
-        <button data-action="leave-room" class="text-gray-500 hover:text-white text-sm">
-          Sair da sala
-        </button>
+      <div class="lobby-links">
+        <button data-action="show-rules" class="btn-link">Como jogar</button>
+        <span aria-hidden="true">·</span>
+        <button data-action="show-themes" class="btn-link">Tema das cartas</button>
+        <span aria-hidden="true">·</span>
+        <button data-action="leave-room" class="btn-link muted">Sair da sala</button>
       </div>
     </div>
   </section>
@@ -170,91 +146,60 @@
   <!-- ============================================================ -->
   <!-- TELA: JOGO                                                    -->
   <!-- ============================================================ -->
-  <section id="screen-game" class="screen hidden flex-col min-h-screen">
+  <section id="screen-game" class="screen hidden game-screen">
 
-    <!-- Barra superior -->
-    <header class="bg-gray-900/80 backdrop-blur border-b border-gray-800 p-3 flex items-center justify-between gap-2">
-      <div class="text-xs text-gray-400">
-        Sala: <span id="game-room-code" class="font-mono text-amber-400">—</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="text-xs text-gray-400">
-          Turno: <span id="game-current-turn" class="font-semibold text-white">—</span>
-        </div>
-        <button data-action="show-rules" class="sound-toggle" title="Como jogar">📖</button>
-        <button data-action="show-themes" class="sound-toggle" title="Tema das cartas">🎨</button>
-        <button id="sound-toggle" class="sound-toggle" title="Ligar/desligar som">🔊</button>
-        <button id="game-leave-btn" data-action="leave-game" class="sound-toggle" title="Sair da sala">🚪 Sair</button>
+    <header class="game-header">
+      <div class="room-chip">Sala <b id="game-room-code">—</b></div>
+      <div class="turn-chip">Vez de <b id="game-current-turn">—</b></div>
+      <div class="header-buttons">
+        <button data-action="show-rules" class="sound-toggle" title="Como jogar" aria-label="Como jogar">?</button>
+        <button data-action="show-themes" class="sound-toggle" title="Tema das cartas" aria-label="Tema das cartas">🎨</button>
+        <button id="sound-toggle" class="sound-toggle" title="Ligar/desligar som" aria-label="Som">🔊</button>
+        <button id="game-leave-btn" data-action="leave-game" class="sound-toggle leave" title="Sair da sala">Sair</button>
       </div>
     </header>
 
-    <!-- Barra de timer (opcional) -->
     <div id="turn-timer" class="hidden"><div id="turn-timer-fill"></div></div>
 
-    <!-- Banner de fase atual (pendente, aguardando resposta, etc.) -->
-    <div id="game-phase-banner" class="hidden px-4 py-3 text-sm text-center border-b border-amber-600/40 bg-amber-600/10 text-amber-200"></div>
+    <div id="game-phase-banner" class="phase-banner hidden"></div>
 
-    <!-- Barra de auto-pass (10s) -->
-    <div id="auto-pass-bar" class="hidden flex items-center gap-2 px-4 py-2 border-b border-gray-800 bg-gray-900/60 text-xs">
-      <span class="text-gray-400">⏳ Auto-pass em</span>
-      <span id="auto-pass-label" class="font-mono font-bold text-amber-300">10s</span>
-      <div class="flex-1 h-1 bg-gray-700 rounded overflow-hidden">
-        <div id="auto-pass-fill" class="h-full bg-gradient-to-r from-amber-400 to-red-500 transition-all" style="width:100%"></div>
-      </div>
+    <div id="auto-pass-bar" class="hidden auto-pass">
+      <span>Passa sozinho em</span>
+      <b id="auto-pass-label">10s</b>
+      <div class="auto-pass-track"><div id="auto-pass-fill" style="width:100%"></div></div>
     </div>
 
-    <!-- Área principal: outros jogadores -->
-    <div class="flex-1 flex flex-col gap-4 p-4">
-      <div>
-        <h3 class="text-xs uppercase tracking-wider text-gray-500 mb-2">Outros jogadores</h3>
-        <ul id="game-opponents" class="flex flex-wrap gap-3">
-          <!-- Jogadores oponentes preenchidos dinamicamente -->
-        </ul>
+    <main class="table">
+      <ul id="game-opponents" class="seats"></ul>
+
+      <div class="ledger-wrap">
+        <h3 class="section-label">Registro</h3>
+        <div id="game-log" class="ledger"><p class="muted-line">A partida vai começar…</p></div>
+      </div>
+    </main>
+
+    <footer class="hand">
+      <div class="hand-head">
+        <div class="hand-name"><small>Você</small><span id="game-my-name">—</span></div>
+        <div class="coin-chip big" title="Suas moedas"><i class="coin"></i><span id="game-my-coins">2</span></div>
       </div>
 
-      <!-- Log de eventos -->
-      <div class="flex-1">
-        <h3 class="text-xs uppercase tracking-wider text-gray-500 mb-2">Eventos da partida</h3>
-        <div id="game-log" class="bg-gray-900/60 border border-gray-800 rounded-lg p-3 h-40 sm:h-56 overflow-y-auto text-sm font-mono text-gray-300 space-y-1">
-          <p class="text-gray-600 italic">A partida vai começar...</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Área inferior: jogador (eu) -->
-    <footer class="bg-gray-900/90 backdrop-blur border-t border-gray-800 p-4 sticky bottom-0">
-      <div class="flex items-center justify-between mb-3">
-        <div>
-          <p class="text-xs text-gray-500">Você</p>
-          <p id="game-my-name" class="font-semibold">—</p>
-        </div>
-        <div class="text-right">
-          <p class="text-xs text-gray-500">Moedas</p>
-          <p id="game-my-coins" class="font-bold text-amber-400 text-xl">2</p>
-        </div>
+      <div class="hand-cards">
+        <div id="game-my-card-1" class="card-placeholder"></div>
+        <div id="game-my-card-2" class="card-placeholder"></div>
       </div>
 
-      <!-- Minhas cartas -->
-      <div class="flex gap-3 justify-center mb-4">
-        <div id="game-my-card-1" class="card-placeholder">?</div>
-        <div id="game-my-card-2" class="card-placeholder">?</div>
+      <div id="game-actions" class="actions-grid">
+        <button class="btn-action" data-game-action="income"><span class="a-name">Renda</span><span class="a-sub">+1 moeda</span></button>
+        <button class="btn-action" data-game-action="foreign-aid"><span class="a-name">Ajuda externa</span><span class="a-sub">+2 moedas</span></button>
+        <button class="btn-action" data-game-action="coup"><span class="a-name">Golpe</span><span class="a-sub">−7 moedas</span></button>
+        <button class="btn-action" data-game-action="tax"><span class="a-name">Imposto</span><span class="a-sub">Duque · +3</span></button>
+        <button class="btn-action" data-game-action="assassinate"><span class="a-name">Assassinar</span><span class="a-sub">Assassino · −3</span></button>
+        <button class="btn-action" data-game-action="steal"><span class="a-name">Extorquir</span><span class="a-sub">Capitão · +2</span></button>
+        <button class="btn-action" data-game-action="exchange"><span class="a-name">Trocar</span><span class="a-sub">Embaixador</span></button>
       </div>
 
-      <!-- Botões de ação (visível no meu turno, fase 'action') -->
-      <div id="game-actions" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <button class="btn-action" data-game-action="income">Renda<br><span class="text-xs opacity-70">+1</span></button>
-        <button class="btn-action" data-game-action="foreign-aid">Ajuda Ext.<br><span class="text-xs opacity-70">+2</span></button>
-        <button class="btn-action" data-game-action="coup">Golpe<br><span class="text-xs opacity-70">-7</span></button>
-        <button class="btn-action" data-game-action="tax">Imposto<br><span class="text-xs opacity-70">Duque</span></button>
-        <button class="btn-action" data-game-action="assassinate">Assassinar<br><span class="text-xs opacity-70">-3</span></button>
-        <button class="btn-action" data-game-action="steal">Roubar<br><span class="text-xs opacity-70">Capitão</span></button>
-        <button class="btn-action" data-game-action="exchange">Trocar<br><span class="text-xs opacity-70">Embaixador</span></button>
-      </div>
-
-      <!-- Botões de RESPOSTA (visível quando pendente de contestação/bloqueio) -->
-      <div id="game-response" class="hidden flex-wrap gap-2 mt-1">
-        <!-- Preenchido dinamicamente: Contestar / Bloquear com X / Passar -->
-      </div>
+      <div id="game-response" class="hidden response-row"></div>
     </footer>
   </section>
 
@@ -404,15 +349,15 @@
   <!-- ============================================================ -->
   <!-- MODAL: Notificações/Toasts                                    -->
   <!-- ============================================================ -->
-  <div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 text-sm shadow-lg z-50"></div>
+  <div id="toast" class="hidden" role="status" aria-live="polite"></div>
 
   <!-- Scripts -->
-  <script src="assets/js/sounds.js?v=17"></script>
-  <script src="assets/js/deck.js?v=17"></script>
-  <script src="assets/js/game.js?v=17"></script>
-  <script src="assets/js/ui.js?v=17"></script>
-  <script src="assets/js/peer.js?v=17"></script>
-  <script src="assets/js/cardpreview.js?v=17"></script>
-  <script src="assets/js/main.js?v=17"></script>
+  <script src="assets/js/sounds.js?v=21"></script>
+  <script src="assets/js/deck.js?v=21"></script>
+  <script src="assets/js/game.js?v=21"></script>
+  <script src="assets/js/ui.js?v=21"></script>
+  <script src="assets/js/peer.js?v=21"></script>
+  <script src="assets/js/cardpreview.js?v=21"></script>
+  <script src="assets/js/main.js?v=21"></script>
 </body>
 </html>

@@ -7,6 +7,18 @@ const UI = {
   _prevState: null,     // último state renderizado (p/ detectar deltas)
   _prevMyId: null,
 
+  /** Matiz (0-359) estável a partir do nome — cada jogador ganha sua cor. */
+  _hue(str) {
+    let h = 0;
+    for (const ch of String(str)) h = (h * 31 + ch.charCodeAt(0)) % 360;
+    return h;
+  },
+
+  _avatar(name) {
+    const initial = escapeHTML((String(name).trim()[0] || '?').toUpperCase());
+    return `<span class="avatar" style="--hue:${UI._hue(name)}">${initial}</span>`;
+  },
+
   showScreen(name) {
     UI.screens.forEach(s => {
       const el = document.getElementById(`screen-${s}`);
@@ -42,7 +54,8 @@ const UI = {
         ? `<button class="kick-btn" data-action="kick-player" data-peer-id="${escapeHTML(p.id)}" data-player-name="${escapeHTML(p.name)}" title="Remover ${escapeHTML(p.name)}">×</button>`
         : '';
       li.innerHTML = `
-        <span>${escapeHTML(p.name)}</span>
+        ${UI._avatar(p.name)}
+        <span class="lp-name">${escapeHTML(p.name)}</span>
         <span class="lobby-player-right">${badges.join(' ')}${kickBtn}</span>
       `;
       ul.appendChild(li);
@@ -302,7 +315,7 @@ const UI = {
     const ul = document.getElementById('game-opponents');
     ul.innerHTML = '';
     if (opponents.length === 0) {
-      ul.innerHTML = '<li class="text-gray-500 text-sm italic">Sem oponentes.</li>';
+      ul.innerHTML = '<li class="seat-note">Sem oponentes.</li>';
       return;
     }
     opponents.forEach(opp => {
@@ -317,17 +330,18 @@ const UI = {
           const ch = CHARACTERS[c.toUpperCase()];
           return `<div class="card-placeholder card-opponent revealed has-image ${ch.cssClass}" style="background-image:url('${cardImage(ch.id)}');filter:grayscale(1);opacity:.55" data-name="${escapeHTML(ch.name)}" aria-label="${escapeHTML(ch.name)}"></div>`;
         }
-        return `<div class="card-placeholder card-opponent">?</div>`;
+        return `<div class="card-placeholder card-opponent"></div>`;
       }).join('');
 
       const statusBadge = !opp.alive ? ' ☠️' : (opp.disconnected ? ' 🔌' : '');
       li.innerHTML = `
-        <div class="flex items-center justify-between mb-2">
-          <span class="font-semibold text-sm">${escapeHTML(opp.name)}${statusBadge}</span>
-          <span class="text-amber-400 font-bold text-sm">${opp.coins}💰</span>
+        <div class="seat-head">
+          ${UI._avatar(opp.name)}
+          <span class="seat-name">${escapeHTML(opp.name)}${statusBadge}</span>
+          <span class="coin-chip" title="Moedas"><i class="coin"></i>${opp.coins}</span>
         </div>
-        <div class="flex gap-1.5 justify-center">${cardsHTML}</div>
-        ${opp.disconnected ? '<p class="text-xs text-amber-300 mt-1 italic">Reconectando...</p>' : ''}
+        <div class="seat-cards">${cardsHTML}</div>
+        ${opp.disconnected ? '<p class="seat-note">Reconectando…</p>' : ''}
       `;
       ul.appendChild(li);
     });
@@ -338,7 +352,7 @@ const UI = {
     const prevLen = UI._prevState ? UI._prevState.logLen : 0;
     box.innerHTML = '';
     if (!logEntries || logEntries.length === 0) {
-      box.innerHTML = '<p class="text-gray-600 italic">Sem eventos.</p>';
+      box.innerHTML = '<p class="muted-line">Sem eventos.</p>';
       return;
     }
     const slice = logEntries.slice(-60);
@@ -505,10 +519,10 @@ const UI = {
     players.forEach(p => {
       const li = document.createElement('li');
       const btn = document.createElement('button');
-      btn.className = 'target-btn w-full';
+      btn.className = 'target-btn';
       btn.innerHTML = `
-        <span class="font-semibold">${escapeHTML(p.name)}</span>
-        <span class="text-amber-400 text-sm">${p.coins}💰</span>
+        <span class="t-who">${UI._avatar(p.name)}${escapeHTML(p.name)}</span>
+        <span class="coin-chip"><i class="coin"></i>${p.coins}</span>
       `;
       btn.onclick = () => {
         modal.classList.add('hidden');
