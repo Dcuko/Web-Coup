@@ -293,7 +293,7 @@ const UI = {
       const ch = CHARACTERS[cardId.toUpperCase()];
       slot.classList.add('revealed', 'has-image', ch.cssClass);
       slot.style.backgroundImage = `url('${cardImage(ch.id)}')`;
-      slot.setAttribute('title', ch.name);
+      slot.dataset.name = ch.name; slot.setAttribute('aria-label', ch.name);
       if (me.revealed[i]) slot.style.filter = 'grayscale(1)';
     });
   },
@@ -315,7 +315,7 @@ const UI = {
       const cardsHTML = opp.cards.map((c, i) => {
         if (opp.revealed[i] && c) {
           const ch = CHARACTERS[c.toUpperCase()];
-          return `<div class="card-placeholder card-opponent revealed has-image ${ch.cssClass}" style="background-image:url('${cardImage(ch.id)}');filter:grayscale(1);opacity:.55" title="${escapeHTML(ch.name)}"></div>`;
+          return `<div class="card-placeholder card-opponent revealed has-image ${ch.cssClass}" style="background-image:url('${cardImage(ch.id)}');filter:grayscale(1);opacity:.55" data-name="${escapeHTML(ch.name)}" aria-label="${escapeHTML(ch.name)}"></div>`;
         }
         return `<div class="card-placeholder card-opponent">?</div>`;
       }).join('');
@@ -541,7 +541,7 @@ const UI = {
         const div = document.createElement('div');
         div.className = `card-placeholder card-select revealed has-image ${ch.cssClass}`;
         div.style.backgroundImage = `url('${cardImage(ch.id)}')`;
-        div.setAttribute('title', ch.name);
+        div.dataset.name = ch.name; div.setAttribute('aria-label', ch.name);
         const label = document.createElement('span');
         label.className = 'card-name-label';
         label.textContent = ch.name;
@@ -584,7 +584,7 @@ const UI = {
         const div = document.createElement('div');
         div.className = `card-placeholder card-select revealed has-image ${ch.cssClass}`;
         div.style.backgroundImage = `url('${cardImage(ch.id)}')`;
-        div.setAttribute('title', ch.name);
+        div.dataset.name = ch.name; div.setAttribute('aria-label', ch.name);
         const label = document.createElement('span');
         label.className = 'card-name-label';
         label.textContent = ch.name;

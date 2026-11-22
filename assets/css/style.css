@@ -738,3 +738,49 @@ body {
 .theme-thumbs { display: flex; gap: 0.35rem; flex-shrink: 0; }
 .theme-thumbs img { width: 44px; height: 64px; object-fit: cover; border-radius: 4px; }
 .theme-name { font-weight: 700; }
+
+
+/* ---------- Zoom da carta (hover / segurar) ---------- */
+.card-placeholder.has-image {
+  -webkit-touch-callout: none;   /* sem menu de imagem no long-press (iOS) */
+  -webkit-user-select: none;
+  user-select: none;
+}
+#card-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease-out;
+}
+#card-preview.show { opacity: 1; }
+.card-preview-card {
+  width: min(68vw, 300px);
+  transform: scale(0.9);
+  transition: transform 0.14s ease-out;
+  filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.7));
+}
+#card-preview.show .card-preview-card { transform: scale(1); }
+.card-preview-img {
+  width: 100%;
+  aspect-ratio: 400 / 587;
+  background-size: cover;
+  background-position: center;
+  border-radius: 14px;
+}
+.card-preview-name {
+  margin-top: 0.6rem;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+}
+@media (prefers-reduced-motion: reduce) {
+  #card-preview, .card-preview-card { transition: none; }
+}
