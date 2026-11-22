@@ -15,6 +15,12 @@ Não precisa de build, Node, ngrok nem servidor próprio. As conexões de jogo s
 
 > Depois de atualizar arquivos, aumente o `?v=` no `index.html` (CSS/JS) pra ninguém ficar com cache antigo.
 
+## 🎨 Temas de carta
+
+Cada tema é uma pasta em `assets/cards/<tema>/` com 5 arquivos `.webp` de mesmo nome. Pra adicionar um:
+crie a pasta, coloque as 5 imagens (~400×590 px) e registre em `CARD_THEMES` no `assets/js/deck.js`.
+A escolha fica no `localStorage` (`CardTheme.set('animais')`); o seletor na interface ainda não existe.
+
 ## 🧪 Testar local
 
 Rode `Start_Game.bat` (ou `python -m http.server 8000` nesta pasta) e abra http://localhost:8000.
@@ -38,12 +44,9 @@ coup-online/
     │   ├── ui.js           # Renderização de telas + animações
     │   ├── peer.js         # Conexão PeerJS (host + client)
     │   └── sounds.js       # Áudio procedural via Web Audio API (Fase 4)
-    └── cards/              # ✅ Imagens das cartas (Fase 5)
-        ├── duque.webp
-        ├── assassino.webp
-        ├── capitao.webp
-        ├── embaixador.webp
-        └── condessa.webp
+    └── cards/              # Temas de carta (uma pasta por tema)
+        ├── padrao/         # tema padrão (5 .webp: duque, assassino, capitao, embaixador, condessa)
+        └── animais/        # tema alternativo
 ```
 
 ---

@@ -8,12 +8,49 @@
    ================================================================ */
 
 const CHARACTERS = {
-  DUKE:       { id: 'duke',       name: 'Duque',      cssClass: 'card-duke',       image: 'assets/cards/duque.webp',      action: 'tax',          blocks: ['foreign-aid'] },
-  ASSASSIN:   { id: 'assassin',   name: 'Assassino',  cssClass: 'card-assassin',   image: 'assets/cards/assassino.webp',  action: 'assassinate',  blocks: [] },
-  CAPTAIN:    { id: 'captain',    name: 'Capitão',    cssClass: 'card-captain',    image: 'assets/cards/capitao.webp',    action: 'steal',        blocks: ['steal'] },
-  AMBASSADOR: { id: 'ambassador', name: 'Embaixador', cssClass: 'card-ambassador', image: 'assets/cards/embaixador.webp', action: 'exchange',     blocks: ['steal'] },
-  CONTESSA:   { id: 'contessa',   name: 'Condessa',   cssClass: 'card-contessa',   image: 'assets/cards/condessa.webp',   action: null,           blocks: ['assassinate'] }
+  DUKE:       { id: 'duke',       name: 'Duque',      cssClass: 'card-duke',       file: 'duque', action: 'tax',          blocks: ['foreign-aid'] },
+  ASSASSIN:   { id: 'assassin',   name: 'Assassino',  cssClass: 'card-assassin',   file: 'assassino', action: 'assassinate',  blocks: [] },
+  CAPTAIN:    { id: 'captain',    name: 'Capitão',    cssClass: 'card-captain',    file: 'capitao', action: 'steal',        blocks: ['steal'] },
+  AMBASSADOR: { id: 'ambassador', name: 'Embaixador', cssClass: 'card-ambassador', file: 'embaixador', action: 'exchange',     blocks: ['steal'] },
+  CONTESSA:   { id: 'contessa',   name: 'Condessa',   cssClass: 'card-contessa',   file: 'condessa', action: null,           blocks: ['assassinate'] }
 };
+
+/* ---------- Temas de carta ----------
+   Cada tema é uma pasta em assets/cards/<id>/ com os 5 arquivos .webp
+   (duque, assassino, capitao, embaixador, condessa). O padrão é o 'padrao'.
+   Pra criar um tema novo: crie a pasta, coloque os 5 arquivos e registre aqui. */
+const CARD_THEMES = {
+  padrao:  { name: 'Padrão' },
+  animais: { name: 'Animais' }
+};
+const DEFAULT_CARD_THEME = 'padrao';
+
+const CardTheme = {
+  get() {
+    try {
+      const t = localStorage.getItem('coup:cardTheme');
+      if (t && CARD_THEMES[t]) return t;
+    } catch (_) {}
+    return DEFAULT_CARD_THEME;
+  },
+  set(id) {
+    if (!CARD_THEMES[id]) return;
+    try { localStorage.setItem('coup:cardTheme', id); } catch (_) {}
+    CardTheme.applyToPage();
+  },
+  /** Atualiza imagens estáticas do HTML (modal de regras) que têm data-card. */
+  applyToPage() {
+    document.querySelectorAll('img[data-card]').forEach(img => {
+      img.src = cardImage(img.dataset.card);
+    });
+  }
+};
+
+/** Caminho da imagem de um personagem ('duke', 'assassin'...) no tema atual. */
+function cardImage(characterId) {
+  const ch = CHARACTERS[String(characterId).toUpperCase()];
+  return `assets/cards/${CardTheme.get()}/${ch.file}.webp`;
+}
 
 class Deck {
   constructor() {
@@ -60,3 +97,7 @@ class Deck {
 // Expor no escopo global (sem módulos ES pra evitar setup de build)
 window.CHARACTERS = CHARACTERS;
 window.Deck = Deck;
+window.CARD_THEMES = CARD_THEMES;
+window.CardTheme = CardTheme;
+window.cardImage = cardImage;
+window.addEventListener('DOMContentLoaded', () => CardTheme.applyToPage());

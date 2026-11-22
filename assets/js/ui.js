@@ -292,7 +292,7 @@ const UI = {
       slot.style.opacity = me.revealed[i] ? '0.55' : '1';
       const ch = CHARACTERS[cardId.toUpperCase()];
       slot.classList.add('revealed', 'has-image', ch.cssClass);
-      slot.style.backgroundImage = `url('${ch.image}')`;
+      slot.style.backgroundImage = `url('${cardImage(ch.id)}')`;
       slot.setAttribute('title', ch.name);
       if (me.revealed[i]) slot.style.filter = 'grayscale(1)';
     });
@@ -315,7 +315,7 @@ const UI = {
       const cardsHTML = opp.cards.map((c, i) => {
         if (opp.revealed[i] && c) {
           const ch = CHARACTERS[c.toUpperCase()];
-          return `<div class="card-placeholder card-opponent revealed has-image ${ch.cssClass}" style="background-image:url('${ch.image}');filter:grayscale(1);opacity:.55" title="${escapeHTML(ch.name)}"></div>`;
+          return `<div class="card-placeholder card-opponent revealed has-image ${ch.cssClass}" style="background-image:url('${cardImage(ch.id)}');filter:grayscale(1);opacity:.55" title="${escapeHTML(ch.name)}"></div>`;
         }
         return `<div class="card-placeholder card-opponent">?</div>`;
       }).join('');
@@ -540,7 +540,7 @@ const UI = {
         const ch = CHARACTERS[c.toUpperCase()];
         const div = document.createElement('div');
         div.className = `card-placeholder card-select revealed has-image ${ch.cssClass}`;
-        div.style.backgroundImage = `url('${ch.image}')`;
+        div.style.backgroundImage = `url('${cardImage(ch.id)}')`;
         div.setAttribute('title', ch.name);
         const label = document.createElement('span');
         label.className = 'card-name-label';
@@ -583,7 +583,7 @@ const UI = {
         const ch = CHARACTERS[cardId.toUpperCase()];
         const div = document.createElement('div');
         div.className = `card-placeholder card-select revealed has-image ${ch.cssClass}`;
-        div.style.backgroundImage = `url('${ch.image}')`;
+        div.style.backgroundImage = `url('${cardImage(ch.id)}')`;
         div.setAttribute('title', ch.name);
         const label = document.createElement('span');
         label.className = 'card-name-label';
