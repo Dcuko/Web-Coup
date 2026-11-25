@@ -569,8 +569,8 @@ body {
 #game-phase-banner:not(.hidden) { animation: banner-fade 0.3s ease-out; }
 @keyframes banner-fade { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Mesa: oponentes + registro */
-.table {
+/* Mesa: oponentes + registro (não chamar de .table: colide com o utilitário do Tailwind) */
+.board {
   flex: 1;
   min-height: 0;
   width: 100%;
@@ -580,6 +580,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  overflow-y: auto;      /* janela muito baixa: a mesa rola, o log mantém altura útil */
 }
 .seats { list-style: none; margin: 0; padding: 0.7rem 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.7rem 0.6rem; }
 
@@ -625,7 +626,7 @@ body {
 .opponent-card.disconnected { opacity: 0.6; border-style: dashed; border-color: rgba(226, 188, 107, 0.55); }
 .opponent-card.disconnected .card-placeholder { filter: grayscale(0.6); }
 
-.ledger-wrap { flex: 1; min-height: 90px; display: flex; flex-direction: column; gap: 0.4rem; }
+.ledger-wrap { flex: 1; min-height: 150px; display: flex; flex-direction: column; gap: 0.4rem; }
 .ledger {
   flex: 1;
   min-height: 0;
@@ -935,7 +936,7 @@ body {
 /* ---------- Telas estreitas: página rola, mão fica fixa no rodapé ---------- */
 @media (max-width: 859px) {
   .game-screen { height: auto; min-height: 100vh; min-height: 100dvh; }
-  .table { flex: none; padding-bottom: 0.9rem; }
+  .board { flex: none; padding-bottom: 0.9rem; }
   .ledger-wrap { flex: none; }
   .ledger { flex: none; max-height: 26vh; max-height: 26dvh; min-height: 96px; }
 
